@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Meyl, Hively, and Nikolova–Zimmerman — A Comparison for Electrical Engineers</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
   <style>
     :root {
       --bg: #0f1419;
@@ -58,21 +62,18 @@
     .c-meyl { color: var(--meyl); }
     .c-hively { color: var(--hively); }
     .c-zim { color: var(--zim); }
-    code, .eq {
-      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-      font-size: 0.9em;
-      background: #12181f;
-      padding: 0.08em 0.28em;
-      border-radius: 3px;
-    }
     .eq-block {
       background: #12181f;
       border: 1px solid var(--line);
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 1rem;
       overflow-x: auto;
-      margin: 0.8rem 0;
-      font-family: ui-monospace, Consolas, monospace;
-      font-size: 0.88rem;
+      margin: 0.55rem 0 0.35rem;
+      text-align: center;
+    }
+    .eq-caption {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin: 0 0 1rem;
     }
     ul.tight li { margin: 0.25rem 0; }
     footer {
@@ -83,10 +84,7 @@
       font-size: 0.85rem;
     }
     a { color: var(--accent); }
-    .grid {
-      display: grid;
-      gap: 0.9rem;
-    }
+    .grid { display: grid; gap: 0.9rem; }
     @media (min-width: 800px) {
       .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
     }
@@ -97,6 +95,7 @@
       padding: 0.9rem 1rem;
     }
     .card h3 { margin-top: 0; }
+    .katex { font-size: 1.05em; }
   </style>
 </head>
 <body>
@@ -118,35 +117,80 @@
 
     <h2>1. Classical baseline (what they all say is incomplete)</h2>
     <p>
-      In SI Heaviside–Gibbs form, source-free Maxwell theory has
-      \(\nabla\cdot\mathbf{B}=0\) (no magnetic monopoles) and
-      \(\nabla\cdot\mathbf{D}=\rho\), \(\nabla\times\mathbf{H}=\mathbf{J}+\partial\mathbf{D}/\partial t\),
-      \(\nabla\times\mathbf{E}=-\partial\mathbf{B}/\partial t\).
-      Taking the divergence of Ampère plus Gauss yields the continuity equation
-      \(\partial\rho/\partial t+\nabla\cdot\mathbf{J}=0\).
+      Textbook electrodynamics in SI Heaviside–Gibbs form is four field equations.
+      An EE uses them every day for antennas, shielding, and circuits.
     </p>
-    <p>
-      Potentials are introduced by \(\mathbf{B}=\nabla\times\mathbf{A}\) and
-      \(\mathbf{E}=-\nabla\Phi-\partial\mathbf{A}/\partial t\).
-      The combination
+
+    <div class="eq-block">$$\nabla \cdot \mathbf{D} = \rho$$</div>
+    <p class="eq-caption">
+      Gauss’s law for electricity: electric flux out of a volume equals the enclosed free charge density $\rho$.
+      $\mathbf{D}=\varepsilon\mathbf{E}$ in linear media.
     </p>
-    <div class="eq-block">C ≡ ∇·A + (1/c²) ∂Φ/∂t</div>
-    <p>
-      is set to zero in the Lorenz gauge. That choice decouples the wave equations for
-      \(\mathbf{A}\) and \(\Phi\) and is usually presented as “just a gauge,” not a physical field.
-      In free space the propagating solutions used in radio are transverse electromagnetic (TEM) waves:
-      \(\mathbf{E}\) and \(\mathbf{H}\) perpendicular to \(\mathbf{k}\), Poynting vector along \(\mathbf{k}\).
+
+    <div class="eq-block">$$\nabla \cdot \mathbf{B} = 0$$</div>
+    <p class="eq-caption">
+      Gauss’s law for magnetism: magnetic field lines have no beginning or end.
+      This is the “no magnetic monopoles” statement Meyl challenges.
     </p>
-    <p>
-      A conducting enclosure (Faraday cage) cancels interior fields for wavelengths large compared
-      with apertures and for wall thickness large compared with skin depth
-      \(\delta=\sqrt{2/\omega\mu\sigma}\). That is the EE’s default expectation.
+
+    <div class="eq-block">$$\nabla \times \mathbf{E} = -\frac{\partial\mathbf{B}}{\partial t}$$</div>
+    <p class="eq-caption">
+      Faraday’s law: a changing magnetic field produces a circulating electric field.
+      This is the induction law transformers and loops use. Meyl takes a form of this law as his starting axiom.
     </p>
+
+    <div class="eq-block">$$\nabla \times \mathbf{H} = \mathbf{J} + \frac{\partial\mathbf{D}}{\partial t}$$</div>
+    <p class="eq-caption">
+      Ampère–Maxwell law: current density $\mathbf{J}$ plus displacement current produce a circulating magnetic field.
+      $\mathbf{B}=\mu\mathbf{H}$ in linear media.
+    </p>
+
     <p>
-      All three authors argue that something physical is lost when \(C=0\) is imposed,
-      when only transverse radiation is admitted, or when \(\nabla\cdot\mathbf{B}=0\) is treated as an
-      absolute law rather than a constraint that might fail in an extended theory.
-      They do <em>not</em> use the same replacement.
+      Take the divergence of Ampère–Maxwell and substitute Gauss. You recover local charge conservation:
+    </p>
+    <div class="eq-block">$$\frac{\partial\rho}{\partial t} + \nabla \cdot \mathbf{J} = 0$$</div>
+    <p class="eq-caption">
+      Continuity equation: charge that leaves a volume must appear as current through the surface.
+      Hively’s reviewers focus here, because his extra scalar field is sourced by any leftover of this identity.
+    </p>
+
+    <p>Fields are written from potentials so that the two homogeneous Maxwell equations are automatic:</p>
+    <div class="eq-block">$$\mathbf{B} = \nabla \times \mathbf{A}$$</div>
+    <p class="eq-caption">
+      Magnetic field is the curl of the magnetic vector potential $\mathbf{A}$.
+      Any field of this form automatically satisfies $\nabla\cdot\mathbf{B}=0$.
+    </p>
+
+    <div class="eq-block">$$\mathbf{E} = -\nabla\Phi - \frac{\partial\mathbf{A}}{\partial t}$$</div>
+    <p class="eq-caption">
+      Electric field is minus the gradient of the scalar potential $\Phi$ minus the time derivative of $\mathbf{A}$.
+      The first term is the electrostatic (irrotational) part; the second is the induced (Faraday) part.
+    </p>
+
+    <p>
+      Combining those definitions produces the Lorenz-gauge leftover, which textbooks usually set to zero:
+    </p>
+    <div class="eq-block">$$C \equiv \nabla\cdot\mathbf{A} + \frac{1}{c^{2}}\frac{\partial\Phi}{\partial t}$$</div>
+    <p class="eq-caption">
+      $C$ is a scalar built only from potentials. In the Lorenz gauge one forces $C=0$.
+      That decouples the wave equations for $\mathbf{A}$ and $\Phi$.
+      Hively’s program is to keep $C$ as a real dynamical field instead of a gauge condition.
+    </p>
+
+    <p>Free-space radio waves used in communications are transverse electromagnetic (TEM):</p>
+    <div class="eq-block">$$\mathbf{E}\perp\mathbf{k},\qquad \mathbf{H}\perp\mathbf{k},\qquad \mathbf{S}=\mathbf{E}\times\mathbf{H}\parallel\mathbf{k}$$</div>
+    <p class="eq-caption">
+      $\mathbf{k}$ is the propagation direction. $\mathbf{E}$ and $\mathbf{H}$ oscillate across that direction.
+      Power flows along $\mathbf{k}$ via the Poynting vector $\mathbf{S}$.
+      All three authors claim an additional longitudinal or potential-dominated channel is missing from this picture.
+    </p>
+
+    <p>A metal wall attenuates a TEM wave over a skin depth</p>
+    <div class="eq-block">$$\delta = \sqrt{\frac{2}{\omega\mu\sigma}}$$</div>
+    <p class="eq-caption">
+      $\omega$ is radian frequency, $\mu$ permeability, $\sigma$ conductivity.
+      For copper at 8&nbsp;GHz, $\delta$ is a fraction of a micrometre.
+      A Faraday cage works when walls are many skin depths thick and apertures are much smaller than the wavelength $\lambda$.
     </p>
 
     <h2>2. One-page comparison</h2>
@@ -163,56 +207,56 @@
         <tr>
           <th>Starting point</th>
           <td>Faraday’s induction law as axiom; “potential vortices” from an incomplete Maxwell set.</td>
-          <td>Keep Maxwell fields but refuse to gauge away \(C\). Extra dynamical scalar in Gauss and Ampère.</td>
-          <td>Physical magnetic vector potential \(\mathbf{A}\); macroscopic Aharonov–Bohm; TM<sub>01</sub> launch of longitudinal \(\mathbf{A}\).</td>
+          <td>Keep Maxwell $\mathbf{E},\mathbf{B}$ but refuse to set $C=0$. Extra dynamical scalar in Gauss and Ampère.</td>
+          <td>Physical magnetic vector potential $\mathbf{A}$; macroscopic Aharonov–Bohm; TM<sub>01</sub> launch of longitudinal $\mathbf{A}$.</td>
         </tr>
         <tr>
           <th>What is “scalar / longitudinal”?</th>
-          <td>Longitudinal electric wave / vortex field; often called Skalarwelle. Mix of Tesla language and vortex pictures.</td>
-          <td>SLW: \(\mathbf{B}=0\), \(C\neq 0\), \(\mathbf{E}\) along the gradient / propagation. Separate “scalar wave” case \(\mathbf{E}=\mathbf{B}=0\), \(C\neq 0\).</td>
-          <td>Longitudinally polarized momentum / vector-potential radiation. Receiver responds to \(\mathbf{A}\) along the axis, not to TEM \(\mathbf{E}\times\mathbf{H}\).</td>
+          <td>Longitudinal electric wave / vortex field; often called Skalarwelle.</td>
+          <td>SLW: $\mathbf{B}=0$, $C\neq 0$, $\mathbf{E}$ along the gradient. Separate scalar-wave case $\mathbf{E}=\mathbf{B}=0$, $C\neq 0$.</td>
+          <td>Longitudinally polarized momentum / $\mathbf{A}$-wave. Receiver responds to $\mathbf{A}$ along the axis, not to TEM $\mathbf{E}\times\mathbf{H}$.</td>
         </tr>
         <tr>
           <th>Maxwell incompleteness claim</th>
-          <td>Heaviside form dropped magnetic charge and vortex terms; \(\nabla\cdot\mathbf{B}=0\) is the error.</td>
-          <td>Eight scalar Maxwell equations for six field components; Lorenz gauge hides a real field \(C\); interface conditions for \(\Phi\) vs Gauss are inconsistent unless \(C\) is kept.</td>
-          <td>Engineers treat \(\mathbf{A}\) as auxiliary; physicists know \(\mathbf{A}\) is measurable (AB effect). Radiation of \(\mathbf{A}\) is omitted from antenna textbooks.</td>
+          <td>Heaviside form dropped magnetic charge and vortex terms; $\nabla\cdot\mathbf{B}=0$ is the error.</td>
+          <td>Eight scalar Maxwell equations for six field components; Lorenz gauge hides a real field $C$.</td>
+          <td>Engineers treat $\mathbf{A}$ as auxiliary; physicists know $\mathbf{A}$ is measurable (AB effect).</td>
         </tr>
         <tr>
           <th>Magnetic monopoles</th>
-          <td>Explicitly wanted. Cites 2009 spin-ice quasiparticle papers as “monopoles discovered.”</td>
-          <td>Not the centerpiece. EED still usually keeps \(\nabla\cdot\mathbf{B}=0\); novelty is electric-side \(C\) and possible short-time charge non-conservation.</td>
-          <td>Not required. Story is \(\mathbf{A}\) and longitudinal momentum, not magnetic charge.</td>
+          <td>Explicitly wanted. Cites 2009 spin-ice papers as “monopoles discovered.”</td>
+          <td>Not the centerpiece. EED usually keeps $\nabla\cdot\mathbf{B}=0$; novelty is $C$ and short-time charge imbalance.</td>
+          <td>Not required. Story is $\mathbf{A}$ and longitudinal momentum, not magnetic charge.</td>
         </tr>
         <tr>
           <th>Charge / energy</th>
-          <td>Over-unity and “free energy / neutrino power” claims in kit literature; receiver can load the transmitter.</td>
-          <td>Local continuity can fail on sub-Heisenberg timescales; extra energy–momentum terms involving \(C\mathbf{E}\). Claims consistency of the extended identities.</td>
-          <td>Received RF power in the plasma/neon detector is said to come from the detector bias supply, not from a TEM Poynting flux.</td>
+          <td>Over-unity and “neutrino power” claims in kit literature; receiver can load the transmitter.</td>
+          <td>Continuity can fail on short timescales; extra energy–momentum terms involving $C\mathbf{E}$.</td>
+          <td>Detected RF power said to come from the detector bias supply, not from TEM Poynting flux.</td>
         </tr>
         <tr>
           <th>Shielding claim</th>
           <td>Scalar waves tunnel through Faraday cages; LEDs stay lit inside metal boxes in “scalar mode.”</td>
-          <td>SLW not subject to classical skin effect; transmission through copper / Faraday cages at microwave (patent &amp; IARD slides, e.g. ~8&nbsp;GHz).</td>
-          <td>Ordinary dipole/loop antennas miss the wave; plasma column or biased neon aligned with \(\mathbf{k}\) detects it, including “off the end” of a monopole.</td>
+          <td>SLW not subject to classical skin effect $\delta$; transmission through copper at microwave.</td>
+          <td>Ordinary dipole/loop antennas miss the wave; plasma or biased neon aligned with $\mathbf{k}$ detects it.</td>
         </tr>
         <tr>
           <th>Typical hardware</th>
-          <td>Paired Tesla-style coils / kits sold by 1st TZS; function generator, spheres, LED boards, metal suitcase/box.</td>
-          <td>Linear monopole, bifilar / spiral coil, network analyzer S21 vs distance; sealed copper enclosures.</td>
-          <td>Coax / circular waveguide TM<sub>01</sub>, ~1.3&nbsp;GHz; parallel plasma tubes or DC-biased neon bulbs.</td>
+          <td>Paired Tesla-style coils / kits; function generator, spheres, LED boards, metal box.</td>
+          <td>Linear monopole, bifilar / spiral coil, network analyzer $S_{21}$ vs distance; sealed copper.</td>
+          <td>Coax / circular waveguide TM<sub>01</sub>, about 1.3&nbsp;GHz; plasma tubes or DC-biased neon.</td>
         </tr>
         <tr>
           <th>Relation to each other</th>
-          <td>Independent Tesla/vortex tradition. Not cited as foundation by Hively or Zimmerman.</td>
-          <td>Independent EED program (Woodside uniqueness, 2016 patent). Mentions other “scalar wave” claims only as a different theory when noted at all.</td>
-          <td>McMaster / QEX / JAP line. Combined in some later Hively-related simulators as “Nikolova–Zimmerman” longitudinal-\(\mathbf{A}\) model, not Meyl.</td>
+          <td>Independent Tesla/vortex tradition. Not used as foundation by Hively or Zimmerman.</td>
+          <td>Independent EED program (Woodside uniqueness, 2016 patent).</td>
+          <td>McMaster / QEX / JAP line. Later combined with Hively as “Nikolova–Zimmerman,” not Meyl.</td>
         </tr>
         <tr>
           <th>Mainstream status</th>
-          <td>University barred the theories from official lectures (~2001). Retracted DNA/cell paper. Treated as pseudoscience by GWUP and most EM faculty.</td>
-          <td>Patent issued; papers in <em>Physics Essays</em> / similar venues. Not adopted in IEEE antenna or EMC standards. Reviewers attack BCs, continuity, Ohm’s law in metal.</td>
-          <td>QEX and JAP publications exist; interpretation disputed (e.g. Ferraro–Grimes–McGinn: residual TEM + radial E). Not in standard antenna courses.</td>
+          <td>University barred the theories from official lectures (~2001). Retracted DNA/cell paper.</td>
+          <td>Patent issued; papers in <em>Physics Essays</em> and similar. Not in IEEE EMC standards.</td>
+          <td>QEX and JAP papers exist; interpretation disputed. Not in standard antenna courses.</td>
         </tr>
       </tbody>
     </table>
@@ -224,89 +268,143 @@
         <p>
           Rebuilds field theory from Faraday unipolar induction and a vortex term in the electric field.
           The “scalar wave” is a longitudinal electric structure that can contract, tunnel, and
-          carry energy without a TEM pair. Magnetic monopoles / magnetic charge are part of the
-          intended symmetry. Language overlaps Tesla, neutrinos, and biological scalar waves.
+          carry energy without a TEM pair. Magnetic monopoles are part of the intended symmetry.
         </p>
       </div>
       <div class="card">
         <h3 class="c-hively">Hively</h3>
         <p>
-          Does not throw out Maxwell’s \(\mathbf{E},\mathbf{B}\). Promotes the Lorenz-gauge leftover
-          \(C\) to a physical field. Extended Ampère / Gauss acquire \(\nabla C\) and \(\partial C/\partial t\)
-          terms. Wave equations for \(\mathbf{A}\), \(\Phi\), and \(C\) exist without choosing a gauge.
-          SLW is the \(B=0\), \(C\neq 0\) solution with longitudinal \(\mathbf{E}\).
+          Does not throw out Maxwell’s $\mathbf{E}$ and $\mathbf{B}$. Promotes the Lorenz leftover $C$
+          to a physical field. Extended Ampère and Gauss acquire $\nabla C$ and $\partial C/\partial t$.
+          SLW is the $\mathbf{B}=0$, $C\neq 0$ solution with longitudinal $\mathbf{E}$.
         </p>
       </div>
       <div class="card">
         <h3 class="c-zim">Zimmerman / Nikolova</h3>
         <p>
-          Keeps Maxwell but insists the vector potential radiates and can be received when
-          \(\mathbf{B}\) is weak or arranged to be longitudinal-\(\mathbf{A}\) dominated
-          (TM<sub>01</sub>-like). Detection is a momentum kick on charges (AB-like), not
-          a \(\mathbf{v}\times\mathbf{B}\) or TEM \(\mathbf{E}\) on a wire antenna.
+          Keeps Maxwell but insists $\mathbf{A}$ radiates and can be received when the field is
+          longitudinal-$\mathbf{A}$ dominated (TM<sub>01</sub>-like). Detection is a momentum kick
+          on charges, not $\mathbf{v}\times\mathbf{B}$ on a wire antenna.
         </p>
       </div>
     </div>
 
     <h2>4. Equations an EE can compare</h2>
-    <h3>Textbook Lorenz gauge (set to zero)</h3>
-    <div class="eq-block">∇·A + (1/c²) ∂Φ/∂t = 0</div>
-    <p>
-      Hively’s move is: do not set this to zero. Call it \(C(x,t)\) and let it obey a wave equation
-      sourced by the residual of the continuity equation
-      \(\partial\rho/\partial t+\nabla\cdot\mathbf{J}\).
-      That is why reviewers immediately ask about local charge conservation and Ohm’s law inside copper.
+
+    <h3>4.1 Textbook Lorenz gauge</h3>
+    <div class="eq-block">$$\nabla\cdot\mathbf{A} + \frac{1}{c^{2}}\frac{\partial\Phi}{\partial t} = 0$$</div>
+    <p class="eq-caption">
+      This is $C=0$. It is a convenient choice, not a Maxwell equation.
+      With this choice the potentials each satisfy an ordinary wave equation driven by $\mathbf{J}$ and $\rho$.
     </p>
-    <h3>Meyl’s narrative (not the same algebra)</h3>
-    <p>
-      Meyl does not use Hively’s \(C\) as the primary object. He talks of potential vortices
-      derived from Faraday’s law and of a split of the wave equation into transverse Hertzian
-      and longitudinal scalar parts. Critics (e.g. G. W. Bruhn) argue the split is inconsistent
-      with Maxwell and that the resulting “moving scalar wave” is not a solution of the Maxwell system
-      in a charge-neutral homogeneous medium.
+
+    <h3>4.2 Hively’s extended electrodynamics (EED)</h3>
+    <p>Keep $C$ and add it to the inhomogeneous Maxwell pair. In vacuum-style form used in EED papers:</p>
+    <div class="eq-block">$$\nabla\cdot\mathbf{E} - \frac{\rho}{\varepsilon} = -\frac{\partial C}{\partial t}$$</div>
+    <p class="eq-caption">
+      Extended Gauss law. The usual $\nabla\cdot\mathbf{E}=\rho/\varepsilon$ is corrected by $-\partial C/\partial t$.
+      If $C$ varies in time, the electric flux and the charge density need not match the classical way.
     </p>
-    <h3>Zimmerman’s detection claim</h3>
+
+    <div class="eq-block">$$\nabla\times\mathbf{B} - \mu\varepsilon\frac{\partial\mathbf{E}}{\partial t} - \mu\mathbf{J} = -\nabla C$$</div>
+    <p class="eq-caption">
+      Extended Ampère law. An extra $-\nabla C$ acts like another current.
+      A spatial gradient of $C$ can drive fields even where $\mathbf{J}$ is small.
+    </p>
+
+    <p>Taking the divergence of the extended Ampère law and using extended Gauss gives a wave equation for $C$:</p>
+    <div class="eq-block">$$\nabla^{2}C - \frac{1}{c^{2}}\frac{\partial^{2}C}{\partial t^{2}} = \mu\left(\frac{\partial\rho}{\partial t}+\nabla\cdot\mathbf{J}\right)$$</div>
+    <p class="eq-caption">
+      If charge is exactly conserved, the right-hand side is zero and $C$ still can propagate as a free wave.
+      If there is any local mismatch of continuity, that mismatch sources $C$.
+      This is why reviewers ask whether EED violates charge conservation or Ohm’s law $\mathbf{J}=\sigma\mathbf{E}$ inside a conductor.
+    </p>
+
+    <p>Hively’s scalar-longitudinal wave (SLW) is the special solution</p>
+    <div class="eq-block">$$\mathbf{B}=0,\qquad C\neq 0,\qquad \mathbf{E}\parallel\nabla C$$</div>
+    <p class="eq-caption">
+      No circulating $\mathbf{B}$, so there is no ordinary TEM Poynting pair.
+      The electric field is longitudinal (along the gradient of $C$, hence along the intended propagation).
+      That is the state he says should not see the classical skin-effect exponential in the same way.
+    </p>
+
+    <h3>4.3 Meyl’s narrative (different algebra)</h3>
     <p>
-      A time-varying longitudinal \(\mathbf{A}\) changes the canonical momentum \(p-q\mathbf{A}\)
-      of charges in a plasma column or biased neon. Reversing detector bias reverses received phase.
-      A conventional monopole in the TEM null (“off the end”) can still couple if the wave is
-      an \(\mathbf{A}\)-wave. Nikolova’s antenna work is the academic near-field / potential-aware
-      backdrop often paired with Zimmerman in later combined models.
+      Meyl does not use Hively’s $C$ as the primary object.
+      He starts from Faraday induction and argues that an electric vortex (potential vortex) is already inside that law.
+      He then splits wave behavior into a transverse Hertzian part and a longitudinal “scalar” part.
+    </p>
+    <div class="eq-block">$$\nabla\times\mathbf{E} = -\frac{\partial\mathbf{B}}{\partial t}\quad\text{(Meyl’s preferred axiom)}$$</div>
+    <p class="eq-caption">
+      Same Faraday law an EE already knows. Meyl’s claim is that Heaviside’s later form of Maxwell
+      discarded vortex / magnetic-charge content that Faraday’s original induction picture still allowed.
+    </p>
+    <div class="eq-block">$$\nabla\cdot\mathbf{B} = \mu\rho_{m}\quad\text{(what Meyl wants instead of }0\text{)}$$</div>
+    <p class="eq-caption">
+      $\rho_{m}$ would be magnetic charge density. If this were true in free space, magnetic field lines could begin and end.
+      Meyl treats the 2009 spin-ice experiments as support. In textbook CED, $\rho_{m}=0$ everywhere.
+    </p>
+    <p>
+      Critics (for example G.&nbsp;W.&nbsp;Bruhn) argue that Meyl’s split of the wave equation is not a consistent Maxwell solution
+      in a charge-neutral homogeneous medium, so the moving “scalar wave” is not the same object as Hively’s $C$-wave.
+    </p>
+
+    <h3>4.4 Zimmerman / Nikolova: longitudinal vector potential</h3>
+    <p>A charge in an electromagnetic field has canonical momentum</p>
+    <div class="eq-block">$$\boldsymbol{\pi} = \mathbf{p} - q\mathbf{A}$$</div>
+    <p class="eq-caption">
+      $\mathbf{p}$ is mechanical momentum, $q$ is charge, $\mathbf{A}$ is the vector potential.
+      The Aharonov–Bohm effect is the statement that $\mathbf{A}$ can change the phase or momentum of a charge
+      even where $\mathbf{B}=\nabla\times\mathbf{A}$ is locally small.
+      Zimmerman treats a time-harmonic longitudinal $\mathbf{A}$ as a receivable wave.
+    </p>
+
+    <div class="eq-block">$$\mathbf{A}(\mathbf{r},t) \approx A_{\parallel}(\mathbf{r})\,e^{j\omega t}\,\hat{\mathbf{k}}$$</div>
+    <p class="eq-caption">
+      $\mathbf{A}$ oscillates along the propagation axis $\hat{\mathbf{k}}$, not across it.
+      That is the opposite of a TEM wave, where $\mathbf{A}$ (and $\mathbf{E}$) are transverse.
+      A TM<sub>01</sub> coax or circular-waveguide launch is used because that mode has an on-axis $E_{z}$ / $A_{z}$ component.
+    </p>
+
+    <div class="eq-block">$$\mathbf{F} = q\left(\mathbf{E} + \mathbf{v}\times\mathbf{B}\right)$$</div>
+    <p class="eq-caption">
+      The Lorentz force an EE uses on a wire antenna. Zimmerman’s point is that a dipole or loop looking for this TEM force
+      can sit in a null while a plasma column or biased neon still responds to $\partial\mathbf{A}/\partial t$ along its axis.
+      Reversing the detector bias current is said to reverse the received phase.
     </p>
 
     <h2>5. Faraday cages — three different stories</h2>
     <ul class="tight">
-      <li><strong>Classical EE:</strong> continuous conductor, seams bonded, thickness ≫ δ, holes ≪ λ → high attenuation of TEM.</li>
+      <li><strong>Classical EE:</strong> continuous conductor, seams bonded, thickness $\gg\delta$, holes $\ll\lambda$ gives high TEM attenuation.</li>
       <li><strong>Meyl:</strong> in “EM mode” the kit LED goes out inside the box; in “scalar mode” (frequency / offset tweak) it stays on. Interpreted as tunneling vortices, not leakage.
         Video of the scalar-wave kit transmitting through a Faraday cage / metal box:
         <a href="https://www.youtube.com/watch?v=6M8YtCbBXLY">youtube.com/watch?v=6M8YtCbBXLY</a>
         (two-cage variant:
         <a href="https://www.youtube.com/watch?v=YbRBrnr9nZs">youtube.com/watch?v=YbRBrnr9nZs</a>).</li>
-      <li><strong>Hively:</strong> SLW should not see the same skin-effect exponential. Patent and IARD material show S21 through metal and plots of dB vs log distance. Reviewers ask whether seams, connectors, and common-mode currents explain the residual.</li>
-      <li><strong>Zimmerman:</strong> the issue is not mainly “through a box” but “invisible to a TEM antenna.” A plasma/neon aligned with \(\mathbf{k}\) is the receiver. Shielding arguments are secondary.</li>
+      <li><strong>Hively:</strong> SLW should not see the same $e^{-x/\delta}$ skin-effect factor. Patent and IARD material show $S_{21}$ through metal and plots of dB versus $\log r$. Reviewers ask whether seams, connectors, and common-mode currents explain the residual.</li>
+      <li><strong>Zimmerman:</strong> the issue is not mainly “through a box” but “invisible to a TEM antenna.” A plasma or neon aligned with $\mathbf{k}$ is the receiver.</li>
     </ul>
     <p>
-      For a practicing EMC engineer the first test is always: bond the seams, feed with
-      optical isolation or battery power, measure residual slot leakage, and compare
-      against a calibrated TEM illuminator. None of the three programs has become an
-      IEC / MIL-STD shielding method.
+      For a practicing EMC engineer the first test is: bond the seams, use optical isolation or battery power,
+      measure residual slot leakage, and compare against a calibrated TEM illuminator.
+      None of the three programs has become an IEC or MIL-STD shielding method.
     </p>
 
     <h2>6. Magnetic monopoles (why Meyl cites 2009)</h2>
     <p>
-      Maxwell/Heaviside \(\nabla\cdot\mathbf{B}=0\) is the statement Meyl says his university
+      The textbook identity $\nabla\cdot\mathbf{B}=0$ is the statement Meyl says his university
       would not let him challenge in class. In later talks he says monopoles were “discovered in 2009.”
-      That refers to <em>emergent</em> monopoles in spin ice (Dy₂Ti₂O₇, Ho₂Ti₂O₇):
+      That refers to <em>emergent</em> monopoles in spin ice (Dy<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub>, Ho<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub>):
     </p>
     <ul class="tight">
-      <li>Morris, Tennant et al., <em>Science</em> (online 3 Sep 2009) — Dirac strings in Dy₂Ti₂O₇ (Helmholtz-Zentrum Berlin).</li>
-      <li>Fennell, Bramwell et al., <em>Science</em> (online 3 Sep 2009) — Coulomb phase in Ho₂Ti₂O₇.</li>
+      <li>Morris, Tennant et al., <em>Science</em> (online 3 Sep 2009) — Dirac strings in Dy<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub> (Helmholtz-Zentrum Berlin).</li>
+      <li>Fennell, Bramwell et al., <em>Science</em> (online 3 Sep 2009) — Coulomb phase in Ho<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub>.</li>
       <li>Bramwell et al., <em>Nature</em> 461, 956 (15 Oct 2009) — monopole charge and current via μSR.</li>
     </ul>
     <p>
       These are quasiparticles at the ends of Dirac strings in a frustrated magnet, not free
       Dirac monopoles in vacuum. They do not rewrite circuit theory or EMC standards.
-      Hively’s EED and Zimmerman’s \(\mathbf{A}\)-waves do not need this 2009 result.
+      Hively’s EED and Zimmerman’s $\mathbf{A}$-waves do not need this 2009 result.
       That is a clean discriminator: <strong>monopoles are central for Meyl, optional or absent for the other two.</strong>
     </p>
 
@@ -321,23 +419,23 @@
           <td>Meyl “scalar mode through a box”; Hively “SLW through copper”</td>
         </tr>
         <tr>
-          <td>TM<sub>01</sub> in coax/circular guide (E<sub>z</sub> on axis, no TEM cutoff in the same way)</td>
-          <td>Zimmerman longitudinal \(\mathbf{A}\) launch</td>
+          <td>TM<sub>01</sub> in coax or circular guide ($E_{z}$ on axis)</td>
+          <td>Zimmerman longitudinal $\mathbf{A}$ launch</td>
         </tr>
         <tr>
           <td>Aharonov–Bohm / vector-potential effects in quantum devices</td>
-          <td>Zimmerman macroscopic plasma/neon receiver</td>
+          <td>Zimmerman macroscopic plasma or neon receiver</td>
         </tr>
         <tr>
-          <td>Gauge choice vs physical observables (E, B unique; A, Φ not)</td>
-          <td>Hively “C is physical”; Meyl “vortices are physical”</td>
+          <td>Gauge choice versus unique observables $\mathbf{E},\mathbf{B}$</td>
+          <td>Hively “$C$ is physical”; Meyl “vortices are physical”</td>
         </tr>
         <tr>
           <td>Spin-ice quasiparticles (2009)</td>
-          <td>Violation of ∇·B = 0 in free-space radio</td>
+          <td>Violation of $\nabla\cdot\mathbf{B}=0$ in free-space radio</td>
         </tr>
         <tr>
-          <td>Resonant coil-to-coil energy transfer (WPT, Tesla coil harmonics)</td>
+          <td>Resonant coil-to-coil energy transfer (WPT, Tesla-coil harmonics)</td>
           <td>Meyl over-unity / neutrino power</td>
         </tr>
       </tbody>
@@ -345,19 +443,19 @@
 
     <h2>8. Overlap map</h2>
     <p>
-      All three say: textbook radio is only the transverse, divergenceless-B, Lorenz-gauged sector,
+      All three say textbook radio is only the transverse, $\nabla\cdot\mathbf{B}=0$, Lorenz-gauged sector,
       and a longitudinal or potential-dominated channel is under-used.
     </p>
     <p>
       <strong>Hively ↔ Zimmerman:</strong> closest technically. Both stay near potential formulations,
       microwave frequencies, and “ordinary antennas are the wrong sensor.” Some later EED / SLW
-      simulators explicitly combine a Hively \(C\)-wave with a Nikolova–Zimmerman longitudinal-\(\mathbf{A}\) picture.
+      simulators combine a Hively $C$-wave with a Nikolova–Zimmerman longitudinal-$\mathbf{A}$ picture.
       Neither builds on Meyl’s vortex books.
     </p>
     <p>
       <strong>Meyl ↔ the other two:</strong> shared slogans (scalar waves, Faraday cages fail, Maxwell incomplete)
-      and shared Tesla mythology. Different algebra, different detectors (LED kits vs VNA / plasma),
-      and Meyl’s extra claims (monopoles as fundamental, biology, over-unity) are not part of
+      and shared Tesla language. Different algebra, different detectors (LED kits versus VNA or plasma),
+      and Meyl’s extra claims (fundamental monopoles, biology, over-unity) are not part of
       Hively’s patent or Zimmerman’s JAP experiment.
     </p>
 
@@ -366,8 +464,7 @@
     <ul>
       <li>Site and videos: <a href="https://www.meyl.eu">meyl.eu</a> (papers, kits, on-demand lectures).</li>
       <li>K. Meyl, “Scalar Waves: Theory and Experiments,” <em>Journal of Scientific Exploration</em> 15(2), 199–205 (2001).</li>
-      <li>Demo discussed in interviews, e.g. potential-vortex talk:
-        <a href="https://www.youtube.com/watch?v=5BECDJkbtjA">youtube.com/watch?v=5BECDJkbtjA</a>.</li>
+      <li>Potential-vortex talk: <a href="https://www.youtube.com/watch?v=5BECDJkbtjA">youtube.com/watch?v=5BECDJkbtjA</a>.</li>
       <li>Scalar-wave kit through a Faraday cage (metal box over the receiver; LED stays on in scalar mode):
         <a href="https://www.youtube.com/watch?v=6M8YtCbBXLY">https://www.youtube.com/watch?v=6M8YtCbBXLY</a></li>
       <li>Same claim with two metal cages:
@@ -387,25 +484,22 @@
     </ul>
     <h3>2009 spin ice (Meyl’s monopole citation)</h3>
     <ul>
-      <li>Morris et al., <em>Science</em> (2009) Dy₂Ti₂O₇ — <a href="https://www.science.org/doi/10.1126/science.1178868">doi:10.1126/science.1178868</a></li>
-      <li>Fennell et al., <em>Science</em> (2009) Ho₂Ti₂O₇ — <a href="https://www.science.org/doi/10.1126/science.1177582">doi:10.1126/science.1177582</a></li>
+      <li>Morris et al., <em>Science</em> (2009) Dy<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub> — <a href="https://www.science.org/doi/10.1126/science.1178868">doi:10.1126/science.1178868</a></li>
+      <li>Fennell et al., <em>Science</em> (2009) Ho<sub>2</sub>Ti<sub>2</sub>O<sub>7</sub> — <a href="https://www.science.org/doi/10.1126/science.1177582">doi:10.1126/science.1177582</a></li>
       <li>Bramwell et al., <em>Nature</em> 461, 956 (2009) — <a href="https://www.nature.com/articles/nature08500">nature.com/articles/nature08500</a></li>
     </ul>
 
     <h2>10. Practical takeaway</h2>
-    <p>
-      If you only remember one distinction:
-    </p>
     <ul>
-      <li><strong>Meyl</strong> = Tesla / vortex / monopole program, kit LEDs, cages “transparent” in scalar mode, extra-physics claims.</li>
-      <li><strong>Hively</strong> = keep Maxwell fields, promote Lorenz leftover \(C\) to a wave, SLW with longitudinal \(\mathbf{E}\) and weak \(\mathbf{B}\), VNA + metal-wall tests.</li>
-      <li><strong>Nikolova–Zimmerman</strong> = longitudinal \(\mathbf{A}\) / TM<sub>01</sub> + wrong-sensor story; plasma or biased discharge as the receiver.</li>
+      <li><strong>Meyl</strong> = Tesla / vortex / monopole program, kit LEDs, cages “transparent” in scalar mode.</li>
+      <li><strong>Hively</strong> = keep Maxwell fields, promote Lorenz leftover $C$ to a wave, SLW with longitudinal $\mathbf{E}$ and $\mathbf{B}\approx 0$.</li>
+      <li><strong>Nikolova–Zimmerman</strong> = longitudinal $\mathbf{A}$ / TM<sub>01</sub>; plasma or neon as the sensor, not a TEM dipole.</li>
     </ul>
     <p>
       An EE evaluating any of them should demand the same things used in EMC and antenna ranges:
       calibrated field probes, documented seam integrity, isolated power, frequency-by-frequency
       comparison with a known TEM illuminator, and a model that reduces to Maxwell when the
-      extra field (\(C\), vortex, or free monopole) is set to zero.
+      extra field ($C$, vortex, or free monopole) is set to zero.
     </p>
 
     <footer>
